@@ -6,7 +6,10 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY!,
   httpOptions: { apiVersion: "v1beta" },
 });
-
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 export async function POST(req: Request) {
   try {
     const body = await req.json();
