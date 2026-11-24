@@ -600,6 +600,13 @@ export default function FarmerWorkspacePage() {
                       </span>
                     )}
                   </div>
+                  {!result.summary &&
+            (!Array.isArray(result.possibleCauses) || result.possibleCauses.length === 0) &&
+            !result.safeNextStep && (
+              <pre className="overflow-x-auto rounded-xl bg-[#f7f4ed] p-3 text-[11px] text-[#17231b]">
+                {JSON.stringify(result, null, 2)}
+              </pre>
+            )}
 
                   {result.summary && (
                     <p className="text-sm text-[#17231b]">{result.summary}</p>
