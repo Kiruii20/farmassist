@@ -248,7 +248,39 @@ export default function FarmerWorkspacePage() {
       if (!res.ok) {
         throw new Error(data?.error || "Diagnostic request failed.");
       }
-      setResult(data.diagnosis || data);
+
+      const rawDiag = data?.diagnosis ?? data;
+      const parsedDiag =
+        typeof rawDiag === "string"
+          ? (() => {
+              try {
+                return JSON.parse(rawDiag);
+              } catch {
+                return { summary: rawDiag };
+              }
+            })()
+          : rawDiag || {};
+
+      setResult({
+        summary:
+          parsedDiag.summary ||
+          parsedDiag.assessment ||
+          parsedDiag.overview ||
+          "",
+        confidence:
+          parsedDiag.confidence || parsedDiag.confidenceLevel || "",
+        safeNextStep:
+          parsedDiag.safeNextStep ||
+          parsedDiag.safe_next_step ||
+          parsedDiag.advice ||
+          parsedDiag.recommendedAction ||
+          "",
+        possibleCauses:
+          parsedDiag.possibleCauses ||
+          parsedDiag.possible_causes ||
+          parsedDiag.causes ||
+          [],
+      });
       setStatusBanner("Diagnostic logged and sent to Grace's extension queue.");
       setTimeout(() => setStatusBanner(null), 4500);
     } catch (err) {
